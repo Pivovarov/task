@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Внешние параметры: -->
+<!-- pageUrl - ссылка на первую страницу -->
+
+<config charset="ISO-8859-1">	
+	
+	<include path="functions.xml"/>
+	
+	<var-def name="pageURL" overwrite="no">
+		http://baza.farpost.ru/internet/?city=0
+	</var-def>
+	
+	<var-def name="maxLoops" overwrite="no">
+		10
+	</var-def>
+	
+	<var-def name="outputFile" overwrite="no">
+		catalog.xml
+	</var-def>
+	
+	<!-- собирает ссылки на объявления -->
+    <var-def name="links">    
+        <call name="download-multipage-list">
+            <call-param name="pageUrl"><var name="pageURL"/></call-param>
+            <call-param name="nextXPath">//a[@class="nextpage trackable ga-usage-paging-next"]/@href</call-param>
+            <call-param name="itemXPath">//tbody[@class="native"]//td[@class="descriptionCell"]/a/@href</call-param>
+            <call-param name="maxloops"><var name="maxLoops"/></call-param>
+        </call>
+    </var-def>   
+    
+    <!-- собирает все объявления -->
+    <var-def name="bulletins">   
+    	<loop item="link" index="i" filter="unique">    	
+    		<list>
+        		<var name="links"/>
+   			</list>
+    		<body>
+    			<xpath expression='//div[@id="content"]'>
+    				<html-to-xml>
+						<http url="${link}"/>
+					</html-to-xml>							
+				</xpath>
+     		</body>
+		</loop>
+	</var-def>   
+
+	<!-- вырезает из страниц объявлений нужную информацию -->
+    <file action="write" path="${outputFile}" charset="UTF-8">
+        <![CDATA[ <catalog> ]]>
+        <loop item="item" index="i">
+            <list><var name="bulletins"/></list>
+            <body>
+                <xquery>
+                    <xq-param name="item" type="node()">
+                    	<var name="item"/>
+                    </xq-param>
+                    <xq-expression><![CDATA[
+                            declare variable $item as node() external;                            
+				
+                            let $subject := $item//h1
+                            let $user := $item//*[@class='userNick ']/a
+                            let $date := $item//(*[@class='bulletinInfoPlate']/div/abbr | tbody[@id='auctionStatus']/*/td[@class='value']/small)                            
+                            let $text := $item//*[@class='bulletinText']
+                            let $num := $item//*[@class='bulletinInfoPlate']/div/strong
+                            let $phones := $item//*[@class='phone']    
+                            let $mails := $item//*[@id='bulletinContacts']/a       	
+                            let $fotos := $item//*[@class='bulletinDiv' or @class='bulletinDiv ']/div/*/img/@src                                                      
+								return
+									<bulletin>
+										<num>{data($num)}</num>
+                                   		<subject>{data($subject)}</subject>
+                                   		<user>{data($user)}</user>  
+                                    	<date>{data($date)}</date>                                        
+                                    	<text>{data($text)}</text>                                       
+                                    	{for $p in $phones return <phone>{data($p)}</phone>}  
+                                    	{for $m in $mails return <mail>{normalize-space(data($m))}</mail>}                                     
+                                    	{for $f in $fotos return <foto>{normalize-space(data($f))}</foto>}
+                               		</bulletin>
+                    ]]></xq-expression>
+                </xquery>
+            </body>
+        </loop>
+        <![CDATA[ </catalog> ]]>
+    </file>	
+</config>
