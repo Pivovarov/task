@@ -22,5 +22,10 @@ java "-jar" task.jar
 java "-jar" task.jar http://baza.farpost.ru/internet/?city=2
 java "-jar" task.jar http://baza.farpost.ru/misc/misc/?city=0 2
 
+Конфигурационные файлы:
+functions.xml - webharvest, функция поиска объявлений
+farpost.xml - webharvest, скрипт для сайта baza.farpost.ru
+tahoma.ttf - шрифт для отчета
+
 Известные проблемы:
 Некорректная работа на страницах, содержащих блочные приклеенные объявления: webharvest некорректно обрабатывает полученный html в поисках URL объявлений.
