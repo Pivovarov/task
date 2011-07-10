@@ -41,14 +41,16 @@ public class BulletinList {
     Font SMALLITALIC;
     Font SUBJECT;
     Font TITLE;
+	//Множество объявлений
     List<Bulletin> bulletins = new ArrayList<Bulletin>();
-    //Множество сообщений, написанных одним автором
+    //Множество объявлений, написанных одним автором
     Set<Set<Bulletin>> authors = new HashSet<Set<Bulletin>>();
+	//Множество одинаковых объявлений
     Set<Set<Bulletin>> doubles = new HashSet<Set<Bulletin>>();
     
+	//Загрузка списка из xml
     BulletinList() {
-        try {
-            
+        try {            
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             org.w3c.dom.Document doc = db.parse(CATALOG_PATH); //Document конфликтует с iText
@@ -78,7 +80,7 @@ public class BulletinList {
 
     //группировка объявлений по пользователям
     public void findAuthors() {
-        //Промежуточный список множеств сообщений, написанных одним автором (с дублями)
+        //Промежуточный список (с повторами)
         List<Set<Bulletin>> auth = new ArrayList<Set<Bulletin>>();
         
         Iterator i = bulletins.iterator();
@@ -115,7 +117,7 @@ public class BulletinList {
         }
     }
 
-    //Проверка на наличие в множествах объявлений одного автора
+    //Поиск объявлений одного автора во множествах
     boolean compareAuthorsSet(Set<Bulletin> set1, Set<Bulletin> set2) {
         Iterator<Bulletin> i1;
         Iterator<Bulletin> i2;
@@ -136,7 +138,7 @@ public class BulletinList {
         return false;
     }
 
-    //Поиск одинаковых объявлений среди объявлений одного автора
+    //Поиск одинаковых объявлений одинакового авторства
     public void findDoubles() {
         Iterator<Set<Bulletin>> i;
         
@@ -146,6 +148,7 @@ public class BulletinList {
         }
     }
     
+	
     void findDoublesAuthor(Set<Bulletin> set) {
         List<Set<Bulletin>> doub = new ArrayList<Set<Bulletin>>();
         
@@ -203,10 +206,12 @@ public class BulletinList {
         return false;
     }
     
+	//создание отчета
     void report() {
         try {
             Document document = new Document();
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(REPORT_PATH));
+			//Загрузка шрифта, поддерживающего кириллицу
             BaseFont bf = BaseFont.createFont(FONT_PATH, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             
             NORMAL = new Font(bf, 12);
@@ -223,11 +228,10 @@ public class BulletinList {
             document.addCreator("Алексей Пивоваров");
             
             document.add(new Paragraph("Дублирующиеся объявления:", TITLE));
-            
-            
+                        
             int chapter = 1;
             Iterator<Set<Bulletin>> i1 = doubles.iterator();
-            while (i1.hasNext()) { //дубликаты                
+            while (i1.hasNext()) { //серии дублей               
                 Set<Bulletin> set = i1.next();
                 Chapter ch = new Chapter(chapter);
                 Iterator<Bulletin> i2 = set.iterator();
@@ -253,6 +257,7 @@ public class BulletinList {
         }
     }
     
+	//Вывод объявления
     public void printBulletin(Bulletin bull, Chapter ch) {
         Section s;
         Paragraph temp;

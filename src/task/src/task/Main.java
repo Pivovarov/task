@@ -16,7 +16,7 @@ import static task.Config.*;
  */
 public class Main {
 
-    //Сбор данных с сайта
+    //Сбор данных с сайта в xml
     public static void collectData(String pathURL, int loops) {
         File f = new File(WORK_DIR);
         if (!f.exists()) {

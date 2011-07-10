@@ -19,9 +19,9 @@ public class Config {
     final static String CATALOG_PATH = WORK_DIR + CATALOG_FILE;
     final static String REPORT_PATH = WORK_DIR + REPORT_FILE;
     final static String FONT_PATH = CONFIG_DIR + FONT_FILE;
-    //Bulletins
+    //Минимальный размер абзаца
     final static int MIN_PARAGRAPH_SIZE = 5;
-    //Коэф. совпадения, после которого объявления считаются совпавшими
+    //Коэф. совпадения, после которого объявления считаются одинаковыми
     final static double SAME_TEXT = 0.6;
     final static double SAME_FOTO = 0.6;
     final static double SAME_URL = 0.6;

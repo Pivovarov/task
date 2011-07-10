@@ -162,7 +162,7 @@ public class Bulletin {
 
     //Исходный текст разбивается на абзацы
     //Отдельно вырезаются строки, содержащие URL 
-    //TODO: определение URL
+    //FIX: определение URL
     public void addText(String s) {
         String[] temp = s.split("\n");
         StringBuilder par = new StringBuilder();
@@ -209,8 +209,8 @@ public class Bulletin {
         url.add(s.trim());
     }
 
-    //Проверка на принадлежность одному пользователю
-    //Возвращает истину в случае, если совпадает имя пользователя, телефон или email
+    //Сравнение авторов
+    //Истинно если совпадает имя пользователя, хотя бы один телефон или email
     public boolean compareAuthor(Bulletin bull) {
         Iterator<String> i1;
         Iterator<String> i2;
@@ -244,7 +244,7 @@ public class Bulletin {
         return false;
     }
 
-    //Сравнить тексты объявлений
+    //Сравнение текстов объявлений
     boolean compareText(Bulletin bull) {
         int length = Math.min(this.getTextN(), bull.getTextN());
 
@@ -276,7 +276,7 @@ public class Bulletin {
         }
     }
 
-    //Сравнить фотографии
+    //Сравнение фотографий
     boolean compareFoto(Bulletin bull) {
         int length = Math.min(this.getFotoN(), bull.getFotoN());
 
@@ -308,7 +308,7 @@ public class Bulletin {
         }
     }
 
-    //Сравнить ссылки
+    //Сравнение ссылок
     boolean compareUrl(Bulletin bull) {
         int length = Math.min(this.getUrlN(), bull.getUrlN());
         if (length == 0) {
@@ -339,7 +339,7 @@ public class Bulletin {
         }
     }
 
-    //Сравнить заголовки
+    //Сравнение заголовков
     boolean compareSubject(Bulletin bull) {
         if (this.subject.equalsIgnoreCase(bull.subject)) {
             return true;
@@ -348,8 +348,8 @@ public class Bulletin {
         }
     }
 
-    //Идентичность объявлений
-    //когда совпадают тексты, заголовки или фотографии и ссылки
+    //Сравнение объявлений
+    //Объявления считаются одинаковыми когда совпадают тексты, заголовки или фотографии и ссылки
     public boolean compareBulletin(Bulletin bull) {
         if (compareText(bull)
                 || compareSubject(bull)
@@ -358,37 +358,5 @@ public class Bulletin {
         } else {
             return false;
         }
-    }
-
-    public Paragraph print(Font font) {
-        Paragraph par = new Paragraph();
-        Iterator<String> i;
-
-        par.add(new Paragraph(city, font));
-        par.add(new Paragraph(subject, font));
-        par.add(new Paragraph(user, font));
-        par.add(new Paragraph(date, font));
-        i = phone.iterator();
-        while (i.hasNext()) {
-            par.add(new Paragraph(i.next(), font));
-        }
-        i = mail.iterator();
-        while (i.hasNext()) {
-            par.add(new Paragraph(i.next(), font));
-        }
-        i = text.iterator();
-        while (i.hasNext()) {
-            par.add(new Paragraph(i.next(), font));
-        }
-        i = url.iterator();
-        while (i.hasNext()) {
-            par.add(new Paragraph(i.next(), font));
-        }
-        i = foto.iterator();
-        while (i.hasNext()) {
-            par.add(new Paragraph(i.next(), font));
-        }
-
-        return par;
     }
 }

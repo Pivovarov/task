@@ -1,6 +1,6 @@
 ﻿Домашнее задание yandex.Мастерской, Алексей Пивоваров. Первая задача
 
-Программа поиска дублирующих объявлений на baza.farpost.ru.
+Программа поиска дублирующихся объявлений на baza.farpost.ru
 
 Язык реализации:
 Java
@@ -12,7 +12,7 @@ iText
 Запуск:
 java "-jar" task.jar [URL] [maxLoops]
 -URL -головная страница(по умолчанию http://baza.farpost.ru/internet/?city=0)
--maxLoops -максимальное число просматриваемых страниц(по умолчанию 10)
+-maxLoops -глубина поиска по страницам(по умолчанию 10)
 
 Конфигурационные файлы находятся в папке "config/", используемые библиотеки в папке "lib/"
 отчет сохраняется в файл "work/report.pdf"
@@ -22,10 +22,16 @@ java "-jar" task.jar
 java "-jar" task.jar http://baza.farpost.ru/internet/?city=2
 java "-jar" task.jar http://baza.farpost.ru/misc/misc/?city=0 2
 
-Конфигурационные файлы:
+config:
 functions.xml - webharvest, функция поиска объявлений
 farpost.xml - webharvest, скрипт для сайта baza.farpost.ru
 tahoma.ttf - шрифт для отчета
+
+src:
+Main.java - основной класс, обеспечивает работу с webharvest
+Bulletin.java - содержит данные об одном объявлении
+BulletinList.java - Список объявлений, обеспечивает поиск дубликатов и создание отчета
+Config.java - константы
 
 Известные проблемы:
 Некорректная работа на страницах, содержащих блочные приклеенные объявления: webharvest некорректно обрабатывает полученный html в поисках URL объявлений.
